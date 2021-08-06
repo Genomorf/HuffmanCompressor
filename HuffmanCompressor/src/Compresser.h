@@ -10,11 +10,12 @@
 using namespace std;
 
 class CompressBaseAbstract {
+public:
+	string fullPathToFile;
 protected:
 	CompressBaseAbstract();
 	CompressBaseAbstract(string _fullPathToFile);
 
-	string fullPathToFile;
 	struct FullPathToDirSplitted {
 		string fileNameWithFormat;
 		string fullPathToDir;
@@ -32,7 +33,7 @@ class CompressWriter : public CompressBaseAbstract {
 public:
 	CompressWriter(string _fullPathToFile);
 	string compress();
-private:
+protected:
 	map<char, vector<bool>> encodingTable;
 
 	string readFromFile();

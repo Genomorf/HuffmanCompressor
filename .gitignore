@@ -365,3 +365,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/CompresserGoogleTest/packages.config
+/HuffmanCompressor/Debug_UnitTests
+/Debug_UnitTests
+/HuffmanCompressor/boost_64_release.props
+/HuffmanCompressor/packages.config

@@ -30,13 +30,6 @@ string CompressBaseAbstract::getFileNameWithNoFormat(const string& fileNameWithF
 	return fileNameNoFormat; 
 }
 
-// pure virtual foos
-string CompressBaseAbstract::readFromFile() {}
-void CompressBaseAbstract::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& binaryString) {}
-//////////////////////////////
-
-
-
 
 //-------------------------//
 // Compresser writer class
