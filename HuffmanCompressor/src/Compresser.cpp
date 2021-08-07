@@ -72,7 +72,7 @@ void CompressWriter::addMetaData(string& binaryString) {
 	binaryString = bitset<32>(binaryString.size()).to_string() + binaryString;
 }
 
-
+CompressWriter::CompressWriter(){}
 void CompressWriter::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& binaryString) {
 	ofstream outputStream(fullPathToDir + fileNameNoFormat + ".comp");
 	stringstream ss;
@@ -152,7 +152,7 @@ string CompressWriter::compress() {
 //-------------------------//
 // Compresser reader class
 //-------------------------//
-
+CompressReader::CompressReader(){}
 CompressReader::CompressReader(string _fullPathToFile) {
 	fullPathToFile = (_fullPathToFile);
 }

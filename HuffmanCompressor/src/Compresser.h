@@ -7,12 +7,13 @@
 #include <bitset>
 #include <sstream>
 #include "HoffmanCypher.h"
+#include <filesystem>
 using namespace std;
 
 class CompressBaseAbstract {
 public:
-	string fullPathToFile;
 protected:
+	string fullPathToFile;
 	CompressBaseAbstract();
 	CompressBaseAbstract(string _fullPathToFile);
 
@@ -31,6 +32,8 @@ protected:
 
 class CompressWriter : public CompressBaseAbstract {
 public:
+	
+	CompressWriter();
 	CompressWriter(string _fullPathToFile);
 	string compress();
 protected:
@@ -46,6 +49,7 @@ protected:
 
 class CompressReader : public CompressBaseAbstract {
 public:
+	CompressReader();
 	CompressReader(string _fullPathToFile);
 
 	const size_t bytesOffset = 4;
