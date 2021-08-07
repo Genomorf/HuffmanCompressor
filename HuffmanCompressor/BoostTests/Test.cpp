@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(CompressWriterInternalFunctionsTest) {
 	compTest.writeToFile(fullPathToDirSplitted.fullPathToDir, FileNameWithNoFormat, encodedStr);
 	ifstream inputTest("./BoostTests/Text.comp");
 	BOOST_CHECK(inputTest.is_open() == true);
-	ifstream inputTestValidator("./BoostTests/TestValidator.comp");
+	ifstream inputTestValidator("./BoostTests/test_validators/TestValidator.comp");
 	BOOST_CHECK(inputTestValidator.is_open() == true);
 	string inputTestStr;
 	string inputTestStrFull;
@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(CompressWriterCompressMethodTest) {
 	CompressWriter compWriter("./BoostTests/Text");
 	BOOST_CHECK(compWriter.compress() == "Invalid file");
 
-	compWriter = CompressWriter("./BoostTests/EmptyText.txt");
+	compWriter = CompressWriter("./BoostTests/test_validators/EmptyText.txt");
 	BOOST_CHECK(compWriter.compress() == "File is empty");
 
 	compWriter = CompressWriter("./BoostTests/Text.txt");
@@ -143,10 +143,10 @@ BOOST_AUTO_TEST_CASE(CompressReaderDecompressMethodTest) {
 	compReader = CompressReader("./BoostTests/Text.txt");
 	BOOST_CHECK(compReader.decompress() == "File is not *.comp");
 
-	compReader = CompressReader("./BoostTests/EmptyComp.comp");
+	compReader = CompressReader("./BoostTests/test_validators/EmptyComp.comp");
 	BOOST_CHECK(compReader.decompress() == "Decompress failed");
 
-	compReader = CompressReader("./BoostTests/EmptyCompWithTable.comp");
+	compReader = CompressReader("./BoostTests/test_validators/EmptyCompWithTable.comp");
 	BOOST_CHECK(compReader.decompress() == "File is empty");
 }
 
