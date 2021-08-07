@@ -2,7 +2,7 @@
 
 int main(int argc, char* argv[])
 {	
-	if (argc < 3) {
+	if (argc != 3) {
 		cout << "Wrong number of arguments.\n" <<
 			"Try 'Compresser -compress TextFile.txt'\n" <<
 			"or  'Compresser -decompress TextFile.comp'";

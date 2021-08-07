@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE mytests
+#define BOOST_TEST_MODULE CompressClassesTests
 #include <boost/test/included/unit_test.hpp>
 #include "../../HuffmanCompressor/src/Compresser.h"
 #include "../../HuffmanCompressor/src/HoffmanCypher.h"
