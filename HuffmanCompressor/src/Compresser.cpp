@@ -255,7 +255,6 @@ string CompressReader::decodeData(string& fileData, map<vector<bool>, char>&& ta
 
 
 void CompressReader::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& decodedStr) {
-	cout << endl << "Decoded str: " << decodedStr << endl;
 	// find fileName at the end of a decoded string:
 	// it is the last word after last space of the file.
 	// pop.back() " file name" from the string.
@@ -305,7 +304,6 @@ string CompressReader::decompress() {
 	}
 	auto tableVectorBoolChar = reverseMap(move(tableCharVectorBool));
 	string fileData = readFromFile();
-	cout << fileData;
 	if (!fileData.size()) {
 		return "File is empty";
 	}
