@@ -10,7 +10,7 @@ public:
 		fullPathToFile = _fullPathToFile;
 	}
 	~CompressWriterTestClass() {}
-	friend struct CompressWriterTest;
+	friend struct CompressWriterInternalFunctionsTest;
 	
 };
 struct CompressReaderTestClass : public CompressReader {
@@ -19,10 +19,10 @@ public:
 		fullPathToFile = _fullPathToFile;
 	}
 	~CompressReaderTestClass() {}
-	friend struct CompressReaderTest;
+	friend struct CompressReaderInternalFunctionsTest;
 
 };
-BOOST_AUTO_TEST_CASE(CompressWriterTest) {
+BOOST_AUTO_TEST_CASE(CompressWriterInternalFunctionsTest) {
 	ifstream inp("./BoostTests/Text.txt");
 	BOOST_CHECK(inp.is_open() == true);
 	inp.seekg(0, inp.end);
@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(CompressWriterTest) {
 	inputTestValidator.close();
 }
 
-BOOST_AUTO_TEST_CASE(CompressReaderTest) {
+BOOST_AUTO_TEST_CASE(CompressReaderInternalFunctionsTest) {
 	ifstream inp("./BoostTests/Text.comp");
 	BOOST_CHECK(inp.is_open() == true);
 	inp.seekg(0, inp.end);
@@ -119,4 +119,46 @@ BOOST_AUTO_TEST_CASE(CompressReaderTest) {
 		res += tmp;
 	}
 	BOOST_CHECK(res == "string1string2string3");
+	in2.close();
+}
+
+BOOST_AUTO_TEST_CASE(CompressWriterCompressMethodTest) {
+	CompressWriter compWriter("./BoostTests/Text");
+	BOOST_CHECK(compWriter.compress() == "Invalid file");
+
+	compWriter = CompressWriter("./BoostTests/EmptyText.txt");
+	BOOST_CHECK(compWriter.compress() == "File is empty");
+
+	compWriter = CompressWriter("./BoostTests/Text.txt");
+	BOOST_CHECK(compWriter.compress() == "");
+
+	ifstream inp("./BoostTests/Text.comp");
+	inp.seekg(0, inp.end);
+	BOOST_CHECK(inp.tellg() == 151);
+}
+BOOST_AUTO_TEST_CASE(CompressReaderDecompressMethodTest) {
+	CompressReader compReader("./BoostTests/Text");
+	BOOST_CHECK(compReader.decompress() == "Invalid file");
+
+	compReader = CompressReader("./BoostTests/Text.txt");
+	BOOST_CHECK(compReader.decompress() == "File is not *.comp");
+
+	compReader = CompressReader("./BoostTests/EmptyComp.comp");
+	BOOST_CHECK(compReader.decompress() == "Decompress failed");
+
+	compReader = CompressReader("./BoostTests/EmptyCompWithTable.comp");
+	BOOST_CHECK(compReader.decompress() == "File is empty");
+}
+
+BOOST_AUTO_TEST_CASE(isValidFileNameTest) {
+	BOOST_CHECK(isValidFileName("txt.txt") == true);
+	BOOST_CHECK(isValidFileName("txt.") == false);
+	BOOST_CHECK(isValidFileName("txt") == false);
+	BOOST_CHECK(isValidFileName(".txt") == false);
+}
+
+BOOST_AUTO_TEST_CASE(isCompFormatFileTest) {
+	BOOST_CHECK(isCompFormatFile("txt.comp") == true);
+	BOOST_CHECK(isCompFormatFile("txt.txt") == false);
+	BOOST_CHECK(isCompFormatFile("txt") == false);
 }

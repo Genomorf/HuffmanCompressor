@@ -38,6 +38,17 @@ CompressWriter::CompressWriter(string _fullPathToFile) {
 	fullPathToFile = _fullPathToFile;
 }
 
+CompressWriter::CompressWriter(CompressWriter& other)
+{
+	this->fullPathToFile = other.fullPathToFile;
+}
+
+CompressWriter& CompressWriter::operator=(const CompressWriter& rhs)
+{
+	this->fullPathToFile = rhs.fullPathToFile;
+	return *this;
+}
+
 string CompressWriter::readFromFile() {
 	ifstream inputStream(fullPathToFile);
 	string tmp;
@@ -157,6 +168,16 @@ CompressReader::CompressReader(string _fullPathToFile) {
 	fullPathToFile = (_fullPathToFile);
 }
 
+CompressReader::CompressReader(CompressReader& other){
+	this->fullPathToFile = other.fullPathToFile;
+}
+
+CompressReader& CompressReader::operator=(const CompressReader& rhs)
+{
+	this->fullPathToFile = rhs.fullPathToFile;
+	return *this;
+}
+
 // find Huffman encoding table at the beginnig of the file
 // stop point is the "end" string 
 map<char, vector<bool>> CompressReader::readEncodingTableFromFile() {
@@ -188,6 +209,7 @@ map<vector<bool>, char> CompressReader::reverseMap(map<char, vector<bool>>&& tab
 // after encoding table file keep information about size of the data 
 // and data itself.
 string CompressReader::readFromFile() {
+	
 	// get to the position after Huffman table
 	ifstream inputstream(fullPathToFile, ios::binary);
 	char chartmp = ' ';
@@ -204,6 +226,9 @@ string CompressReader::readFromFile() {
 		sizeOfData8bitset += bitset<8>(i).to_string();
 	}
 	const int sizeOfDataInt = bitset<32>(sizeOfData8bitset).to_ulong();
+	if (!sizeOfDataInt) {
+		return "";
+	}
 	string binaryStr;
 	string strtmp;
 	// after 4 bytes of size there is data itself: read it by getline
@@ -280,8 +305,9 @@ string CompressReader::decompress() {
 	}
 	auto tableVectorBoolChar = reverseMap(move(tableCharVectorBool));
 	string fileData = readFromFile();
+	cout << fileData;
 	if (!fileData.size()) {
-		"File is empty";
+		return "File is empty";
 	}
 	string decodedStr = decodeData(fileData, move(tableVectorBoolChar));
 	writeToFile(fullPathToDirSplitted.fullPathToDir, fileNameNoFormat, decodedStr);

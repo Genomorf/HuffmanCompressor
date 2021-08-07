@@ -35,6 +35,8 @@ public:
 	
 	CompressWriter();
 	CompressWriter(string _fullPathToFile);
+	CompressWriter(CompressWriter& other);
+	CompressWriter& operator=(const CompressWriter& rhs);
 	string compress();
 protected:
 	map<char, vector<bool>> encodingTable;
@@ -51,11 +53,12 @@ class CompressReader : public CompressBaseAbstract {
 public:
 	CompressReader();
 	CompressReader(string _fullPathToFile);
-
-	const size_t bytesOffset = 4;
+	CompressReader(CompressReader& other);
+	CompressReader& operator=(const CompressReader& rhs);
 	string decompress();
 
 protected:
+	const size_t bytesOffset = 4;
 	map<char, vector<bool>> readEncodingTableFromFile();
 	map<vector<bool>, char> reverseMap(map<char, vector<bool>>&& tableCharVectorBool);
 	string readFromFile();
@@ -63,3 +66,5 @@ protected:
 	void writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& decodedStr);
 };
 
+bool isValidFileName(string const& s);
+bool isCompFormatFile(const string& fileName);
