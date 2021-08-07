@@ -232,13 +232,15 @@ string CompressReader::decodeData(string& fileData, map<vector<bool>, char>&& ta
 void CompressReader::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& decodedStr) {
 	cout << endl << "Decoded str: " << decodedStr << endl;
 	// find fileName at the end of a decoded string:
-	// it is the last word after last space of the file
+	// it is the last word after last space of the file.
+	// pop.back() " file name" from the string.
 	string fileName;
 	while (decodedStr.back() != ' ')
 	{
 		fileName.push_back(decodedStr.back());
 		decodedStr.pop_back();
 	}
+	decodedStr.pop_back();
 	reverse(fileName.begin(), fileName.end());
 	// create new directory to our decompressed file
 	// and create file with decompressed data

@@ -55,9 +55,9 @@ public:
 	const size_t bytesOffset = 4;
 	string decompress();
 
-private:
-	map<vector<bool>, char> reverseMap(map<char, vector<bool>>&& tableCharVectorBool);
+protected:
 	map<char, vector<bool>> readEncodingTableFromFile();
+	map<vector<bool>, char> reverseMap(map<char, vector<bool>>&& tableCharVectorBool);
 	string readFromFile();
 	string decodeData(string& fileData, map<vector<bool>, char>&& tableVectorBoolChar);
 	void writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& decodedStr);
