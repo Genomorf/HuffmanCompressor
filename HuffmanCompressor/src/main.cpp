@@ -1,6 +1,6 @@
 #include "Compresser.h"
 
-
+// TODO: SOLVE SPACING BUG 
 int main(int argc, char* argv[])
 {	
 	if (argc != 3) {
