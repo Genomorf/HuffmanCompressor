@@ -8,10 +8,12 @@
 #include <sstream>
 #include "HoffmanCypher.h"
 #include <filesystem>
+#include <optional>
 using namespace std; // ---> bad code style but for pet-project is possible
 
 class CompressBaseAbstract {
 public:
+	
 protected:
 	string fullPathToFile;
 	CompressBaseAbstract();
@@ -30,6 +32,13 @@ protected:
 };
 
 
+enum class InvalidCompressReason {
+	INVALID_FILE,
+	FILE_IS_EMPTY,
+	FAILED_TO_ENCODE_DATA
+};
+
+
 class CompressWriter : public CompressBaseAbstract {
 public:
 	
@@ -37,7 +46,7 @@ public:
 	CompressWriter(string _fullPathToFile);
 	CompressWriter(CompressWriter& other);
 	CompressWriter& operator=(const CompressWriter& rhs);
-	string compress();
+	optional<InvalidCompressReason> compress();
 protected:
 	map<char, vector<bool>> encodingTable;
 
@@ -49,13 +58,21 @@ protected:
 };
 
 
+enum class InvalidDecompressReason {
+	INVALID_FILE,
+	FILE_IS_NOT_COMP_FORMAT,
+	DECODING_FAILED,
+	FILE_IS_EMPTY
+};
+
+
 class CompressReader : public CompressBaseAbstract {
 public:
 	CompressReader();
 	CompressReader(string _fullPathToFile);
 	CompressReader(CompressReader& other);
 	CompressReader& operator=(const CompressReader& rhs);
-	string decompress();
+	optional<InvalidDecompressReason> decompress();
 
 protected:
 	const size_t bytesOffset = 4;

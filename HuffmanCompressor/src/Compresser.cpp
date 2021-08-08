@@ -142,21 +142,28 @@ bool isValidFileName(string const& s) {
 //		string fileNameWithFormat;
 //		string fullPathToDir;
 //	};
-string CompressWriter::compress() {
+
+
+optional<InvalidCompressReason> CompressWriter::compress() {
 	FullPathToDirSplitted fullPathToDirSplitted = splitFullPathToFile();
 	if (!isValidFileName(fullPathToDirSplitted.fileNameWithFormat)) {
-		return "Invalid file";
+		return InvalidCompressReason::INVALID_FILE;
 	}
+	
 	string fileNameNoFormat = getFileNameWithNoFormat(fullPathToDirSplitted.fileNameWithFormat);
 	string fileData = readFromFile();
-	if (!fileData.size()) {
-		return "File is empty";
+	if (fileData.empty()) {
+		return InvalidCompressReason::FILE_IS_EMPTY;
 	}
 	addFileNameToFileData(fullPathToDirSplitted.fileNameWithFormat, fileData);
 	string binaryString = encodeData(fileData);
+	if (binaryString.empty()) {
+		return InvalidCompressReason::FAILED_TO_ENCODE_DATA;
+	}
 	addMetaData(binaryString);
 	writeToFile(fullPathToDirSplitted.fullPathToDir, fileNameNoFormat, binaryString);
-	return "";
+	
+	return nullopt;
 }
 ///////////////////////////
 
@@ -292,25 +299,26 @@ bool isCompFormatFile(const string& fileName) {
 }
 
 
-string CompressReader::decompress() {
+
+optional<InvalidDecompressReason> CompressReader::decompress() {
 	FullPathToDirSplitted fullPathToDirSplitted = splitFullPathToFile();
 	if (!isValidFileName(fullPathToDirSplitted.fileNameWithFormat)) {
-		return "Invalid file";
+		return InvalidDecompressReason::INVALID_FILE;
 	}
 	if (!isCompFormatFile(fullPathToDirSplitted.fileNameWithFormat)) {
-		return "File is not *.comp";
+		return InvalidDecompressReason::FILE_IS_NOT_COMP_FORMAT;
 	}
 	string fileNameNoFormat = getFileNameWithNoFormat(fullPathToDirSplitted.fileNameWithFormat);
 	auto tableCharVectorBool = readEncodingTableFromFile();
 	if (!tableCharVectorBool.size()) {
-		return "Decompress failed";
+		return InvalidDecompressReason::DECODING_FAILED;
 	}
 	auto tableVectorBoolChar = reverseMap(move(tableCharVectorBool));
 	string fileData = readFromFile();
 	if (!fileData.size()) {
-		return "File is empty";
+		return InvalidDecompressReason::FILE_IS_EMPTY;
 	}
 	string decodedStr = decodeData(fileData, move(tableVectorBoolChar));
 	writeToFile(fullPathToDirSplitted.fullPathToDir, fileNameNoFormat, decodedStr);
-	return "";
+	return nullopt;
 }
