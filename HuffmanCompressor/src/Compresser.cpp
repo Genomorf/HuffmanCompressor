@@ -37,6 +37,7 @@ string CompressBaseAbstract::getFileNameWithNoFormat(const string& fileNameWithF
 //-------------------------//
 // Compresser writer class
 //-------------------------//
+CompressWriter::CompressWriter() {}
 CompressWriter::CompressWriter(string _fullPathToFile) {
 	fullPathToFile = _fullPathToFile;
 }
@@ -86,7 +87,7 @@ void CompressWriter::addMetaData(string& binaryString) {
 	binaryString = bitset<32>(binaryString.size()).to_string() + binaryString;
 }
 
-CompressWriter::CompressWriter(){}
+
 void CompressWriter::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& binaryString) {
 	ofstream outputStream(fullPathToDir + fileNameNoFormat + ".comp");
 	stringstream ss;
@@ -132,16 +133,8 @@ void CompressWriter::writeToFile(const string& fullPathToDir, const string& file
 // check if name is equal to text.txt (in RegEx: .+\..+)
 bool isValidFileName(string const& s) {
 	auto pos = s.find('.');
-	if (pos != string::npos && pos != 0 && pos != s.size() - 1) {
-		return true;
-	}
-	return false;
+	return pos != string::npos && pos != 0 && pos != s.size() - 1;
 }
-
-//	struct FullPathToDirSplitted {
-//		string fileNameWithFormat;
-//		string fullPathToDir;
-//	};
 
 
 optional<InvalidCompressReason> CompressWriter::compress() {
@@ -149,7 +142,6 @@ optional<InvalidCompressReason> CompressWriter::compress() {
 	if (!isValidFileName(fullPathToDirSplitted.fileNameWithFormat)) {
 		return InvalidCompressReason::INVALID_FILE;
 	}
-	
 	string fileNameNoFormat = getFileNameWithNoFormat(fullPathToDirSplitted.fileNameWithFormat);
 	string fileData = readFromFile();
 	if (fileData.empty()) {
@@ -166,8 +158,6 @@ optional<InvalidCompressReason> CompressWriter::compress() {
 	return nullopt;
 }
 ///////////////////////////
-
-
 
 
 //-------------------------//
