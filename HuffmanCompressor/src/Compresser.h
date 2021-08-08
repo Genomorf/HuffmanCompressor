@@ -8,7 +8,7 @@
 #include <sstream>
 #include "HoffmanCypher.h"
 #include <filesystem>
-using namespace std;
+using namespace std; // ---> bad code style but for pet-project is possible
 
 class CompressBaseAbstract {
 public:

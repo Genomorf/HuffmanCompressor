@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 
-using namespace std;
+using namespace std; // ---> bad code style but for pet-project is possible
 
 class Node {
 public:

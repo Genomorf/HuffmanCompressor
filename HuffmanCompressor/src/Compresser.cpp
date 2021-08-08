@@ -8,16 +8,19 @@ CompressBaseAbstract::CompressBaseAbstract() {}
 
 CompressBaseAbstract::CompressBaseAbstract(string _fullPathToFile) : fullPathToFile(_fullPathToFile) {}
 
-
+// struct FullPathToDirSplitted {
+//	 string fileNameWithFormat;
+//	 string fullPathToDir;
+// };
 CompressBaseAbstract::FullPathToDirSplitted CompressBaseAbstract::splitFullPathToFile() {
 	int counter = 0;
 	// get file name without full path
 	for (int i = fullPathToFile.size(); i >= 0 && fullPathToFile[i] != '/' && fullPathToFile[i] != '\\'; --i) {
 		++counter;
 	}
-	return {
-		fullPathToFile.substr(fullPathToFile.size() - counter + 1, counter),  // fileNameWithFormat: out.txt
-		fullPathToFile.substr(0, fullPathToFile.size() - counter + 1) // fullPathToDir:  C:/Users/Alex/source/
+	return { // NRVO doesn't work here
+		move(fullPathToFile.substr(fullPathToFile.size() - counter + 1, counter)),  // fileNameWithFormat: out.txt
+		move(fullPathToFile.substr(0, fullPathToFile.size() - counter + 1)) // fullPathToDir:  C:/Users/Alex/source/
 	};
 }
 

@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 
-using namespace std;
+using namespace std; // ---> bad code style but for pet-project is possible
 
 class HoffmanCypher {
 public:
