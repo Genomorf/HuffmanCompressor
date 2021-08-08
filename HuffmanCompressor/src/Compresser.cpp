@@ -103,7 +103,7 @@ void CompressWriter::writeToFile(const string& fullPathToDir, const string& file
 		ss << '\n';
 	}
 	// sign to CompressReader that this is the end of a table
-	ss << "end" << '\n' << '\0';  
+	ss << "end" << '\0' ;  
 
 	tablestr = ss.str();
 	outputStream << tablestr;
@@ -172,8 +172,7 @@ CompressReader::CompressReader(CompressReader& other){
 	this->fullPathToFile = other.fullPathToFile;
 }
 
-CompressReader& CompressReader::operator=(const CompressReader& rhs)
-{
+CompressReader& CompressReader::operator=(const CompressReader& rhs){
 	this->fullPathToFile = rhs.fullPathToFile;
 	return *this;
 }
@@ -209,7 +208,6 @@ map<vector<bool>, char> CompressReader::reverseMap(map<char, vector<bool>>&& tab
 // after encoding table file keep information about size of the data 
 // and data itself.
 string CompressReader::readFromFile() {
-	
 	// get to the position after Huffman table
 	ifstream inputstream(fullPathToFile, ios::binary);
 	char chartmp = ' ';
