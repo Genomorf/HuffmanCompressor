@@ -9,6 +9,7 @@
 #include "HoffmanCypher.h"
 #include <filesystem>
 #include <optional>
+#include <boost/algorithm/string/replace.hpp>
 using namespace std; // ---> bad code style but for pet-project is possible
 
 class CompressBaseAbstract {

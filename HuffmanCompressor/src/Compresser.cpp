@@ -52,13 +52,16 @@ CompressWriter& CompressWriter::operator=(const CompressWriter& rhs)
 }
 
 string CompressWriter::readFromFile() {
+	ofstream o("Spacing.txt", ios::binary);
 	ifstream inputStream(fullPathToFile);
 	string tmp;
 	string fileData;
 	while (getline(inputStream, tmp)) { // read text from ifstream by line
-		fileData += tmp;
+		fileData += tmp += "\\n";
+		o << tmp;
 	}
 	inputStream.close();
+	o.close();
 	return fileData;
 }
 
@@ -82,7 +85,6 @@ string CompressWriter::encodeData(string& fileData) {
 // it helps us to cut unnescessary bytes later, because binary string
 // is not always equal to 8 bits => binaryString.size() % 8 != 0.
 void CompressWriter::addMetaData(string& binaryString) {
-	cout << "Size: " << binaryString.size() << " : " << bitset<32>(binaryString.size()).to_string() << endl;
 	string size = bitset<32>(binaryString.size()).to_string();
 	binaryString = size + binaryString;
 }
@@ -181,6 +183,7 @@ map<char, vector<bool>> CompressReader::readEncodingTableFromFile() {
 	string key = " ";
 	string value = " ";
 	vector<bool> tmpvec;
+	int counter = 0;
 	map<char, vector<bool>> tableCharVectorBool;
 	while (getline(inputstream, key) && key[0] != '\0' && getline(inputstream, value)) {
 		for (const auto i : value) {
@@ -228,7 +231,6 @@ string CompressReader::readFromFile() {
 	if (!sizeOfDataInt) {
 		return "";
 	}
-	cout << "sizeOfData8bitset: " << sizeOfData8bitset << " : " << sizeOfDataInt << endl;
 	string binaryStr;
 	string strtmp;
 	// after 4 bytes of size there is data itself: read it by getline
@@ -255,6 +257,7 @@ string CompressReader::decodeData(string& fileData, map<vector<bool>, char>&& ta
 
 
 void CompressReader::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& decodedStr) {
+	boost::replace_all(decodedStr, "\\n", "\n");
 	// find fileName at the end of a decoded string:
 	// it is the last word after last space of the file.
 	// pop.back() " file name" from the string.
