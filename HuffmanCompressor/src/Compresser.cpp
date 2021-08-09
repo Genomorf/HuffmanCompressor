@@ -82,13 +82,14 @@ string CompressWriter::encodeData(string& fileData) {
 // it helps us to cut unnescessary bytes later, because binary string
 // is not always equal to 8 bits => binaryString.size() % 8 != 0.
 void CompressWriter::addMetaData(string& binaryString) {
+	cout << "Size: " << binaryString.size() << " : " << bitset<32>(binaryString.size()).to_string() << endl;
 	string size = bitset<32>(binaryString.size()).to_string();
 	binaryString = size + binaryString;
 }
 
 
 void CompressWriter::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& binaryString) {
-	ofstream outputStream(fullPathToDir + fileNameNoFormat + ".comp");
+	ofstream outputStream(fullPathToDir + fileNameNoFormat + ".comp", ios::binary);
 	stringstream ss;
 	string tablestr;
 	// write Huffman encoding table at the beginning of the file.
@@ -227,6 +228,7 @@ string CompressReader::readFromFile() {
 	if (!sizeOfDataInt) {
 		return "";
 	}
+	cout << "sizeOfData8bitset: " << sizeOfData8bitset << " : " << sizeOfDataInt << endl;
 	string binaryStr;
 	string strtmp;
 	// after 4 bytes of size there is data itself: read it by getline
