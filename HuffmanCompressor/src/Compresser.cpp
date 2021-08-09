@@ -12,7 +12,7 @@ CompressBaseAbstract::CompressBaseAbstract(string _fullPathToFile) : fullPathToF
 //	 string fileNameWithFormat;
 //	 string fullPathToDir;
 // };
-CompressBaseAbstract::FullPathToDirSplitted CompressBaseAbstract::splitFullPathToFile() {
+CompressBaseAbstract::FullPathToDirSplitted CompressBaseAbstract::splitFullPathToFile() const {
 	int counter = 0;
 	// get file name without full path
 	for (int i = fullPathToFile.size(); i >= 0 && fullPathToFile[i] != '/' && fullPathToFile[i] != '\\'; --i) {
@@ -25,7 +25,7 @@ CompressBaseAbstract::FullPathToDirSplitted CompressBaseAbstract::splitFullPathT
 }
 
 // remove format form fileName: out.txt ---> out
-string CompressBaseAbstract::getFileNameWithNoFormat(const string& fileNameWithFormat) {
+string CompressBaseAbstract::getFileNameWithNoFormat(const string& fileNameWithFormat) const {
 	string fileNameNoFormat;
 	for (int i = 0; fileNameWithFormat[i] != '.'; ++i) {
 		fileNameNoFormat.push_back(fileNameWithFormat[i]);
@@ -51,7 +51,7 @@ CompressWriter& CompressWriter::operator=(const CompressWriter& rhs)
 	return *this;
 }
 
-string CompressWriter::readFromFile() {
+string CompressWriter::readFromFile() const {
 	ofstream o("Spacing.txt", ios::binary);
 	ifstream inputStream(fullPathToFile);
 	string tmp;
@@ -68,7 +68,7 @@ string CompressWriter::readFromFile() {
 // add fileName to the end of the text.
 // decompresser will find and read it at decompresser stage
 // it helps to find name of the file later
-void CompressWriter::addFileNameToFileData(string& fileNameWithFormat, string& fileData) {
+void CompressWriter::addFileNameToFileData(string& fileNameWithFormat, string& fileData) const{
 	fileNameWithFormat = " " + fileNameWithFormat;
 	fileData += fileNameWithFormat; // text ----> text out.txt
 }
@@ -84,13 +84,13 @@ string CompressWriter::encodeData(string& fileData) {
 // add size of the encoded data to the beginning of the binary string.
 // it helps us to cut unnescessary bytes later, because binary string
 // is not always equal to 8 bits => binaryString.size() % 8 != 0.
-void CompressWriter::addMetaData(string& binaryString) {
+void CompressWriter::addMetaData(string& binaryString) const {
 	string size = bitset<32>(binaryString.size()).to_string();
 	binaryString = size + binaryString;
 }
 
 
-void CompressWriter::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& binaryString) {
+void CompressWriter::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& binaryString) const {
 	ofstream outputStream(fullPathToDir + fileNameNoFormat + ".comp", ios::binary);
 	stringstream ss;
 	string tablestr;
@@ -178,7 +178,7 @@ CompressReader& CompressReader::operator=(const CompressReader& rhs){
 
 // find Huffman encoding table at the beginnig of the file
 // stop point is the "end" string 
-map<char, vector<bool>> CompressReader::readEncodingTableFromFile() {
+map<char, vector<bool>> CompressReader::readEncodingTableFromFile() const {
 	ifstream inputstream(fullPathToFile);
 	string key = " ";
 	string value = " ";
@@ -197,7 +197,7 @@ map<char, vector<bool>> CompressReader::readEncodingTableFromFile() {
 }
 
 
-map<vector<bool>, char> CompressReader::reverseMap(map<char, vector<bool>>&& tableCharVectorBool) {
+map<vector<bool>, char> CompressReader::reverseMap(map<char, vector<bool>>&& tableCharVectorBool) const {
 	map<vector<bool>, char> tableVectorBoolChar;
 	for (const auto& i : tableCharVectorBool) {
 		tableVectorBoolChar[i.second] = i.first;
@@ -207,7 +207,7 @@ map<vector<bool>, char> CompressReader::reverseMap(map<char, vector<bool>>&& tab
 
 // after encoding table file keep information about size of the data 
 // and data itself.
-string CompressReader::readFromFile() {
+string CompressReader::readFromFile() const {
 	// get to the position after Huffman table
 	ifstream inputstream(fullPathToFile, ios::binary);
 	char chartmp = ' ';
@@ -249,14 +249,14 @@ string CompressReader::readFromFile() {
 }
 
 // decode binaryString with Huffman decode algorithm and encoding table, that we found earlier
-string CompressReader::decodeData(string& fileData, map<vector<bool>, char>&& tableVectorBoolChar) {
+string CompressReader::decodeData(string& fileData, map<vector<bool>, char>&& tableVectorBoolChar) const {
 	HoffmanCypher hc;
 	string decodedString = hc.decodeString(fileData, tableVectorBoolChar);
 	return decodedString;
 }
 
 
-void CompressReader::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& decodedStr) {
+void CompressReader::writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& decodedStr) const {
 	boost::replace_all(decodedStr, "\\n", "\n");
 	// find fileName at the end of a decoded string:
 	// it is the last word after last space of the file.
@@ -293,7 +293,7 @@ bool isCompFormatFile(const string& fileName) {
 
 
 
-optional<InvalidDecompressReason> CompressReader::decompress() {
+optional<InvalidDecompressReason> CompressReader::decompress() const{
 	FullPathToDirSplitted fullPathToDirSplitted = splitFullPathToFile();
 	if (!isValidFileName(fullPathToDirSplitted.fileNameWithFormat)) {
 		return InvalidDecompressReason::INVALID_FILE;
