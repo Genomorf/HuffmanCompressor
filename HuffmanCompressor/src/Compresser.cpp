@@ -37,10 +37,8 @@ string CompressBaseAbstract::getFileNameWithNoFormat(const string& fileNameWithF
 //-------------------------//
 // Compresser writer class
 //-------------------------//
-CompressWriter::CompressWriter() {}
-CompressWriter::CompressWriter(string _fullPathToFile) {
-	fullPathToFile = _fullPathToFile;
-}
+//CompressWriter::CompressWriter() {}
+CompressWriter::CompressWriter(string _fullPathToFile) :  CompressBaseAbstract(_fullPathToFile) {}
 
 CompressWriter::CompressWriter(CompressWriter& other)
 {
@@ -84,7 +82,8 @@ string CompressWriter::encodeData(string& fileData) {
 // it helps us to cut unnescessary bytes later, because binary string
 // is not always equal to 8 bits => binaryString.size() % 8 != 0.
 void CompressWriter::addMetaData(string& binaryString) {
-	binaryString = bitset<32>(binaryString.size()).to_string() + binaryString;
+	string size = bitset<32>(binaryString.size()).to_string();
+	binaryString = size + binaryString;
 }
 
 
@@ -103,7 +102,7 @@ void CompressWriter::writeToFile(const string& fullPathToDir, const string& file
 		ss << '\n';
 	}
 	// sign to CompressReader that this is the end of a table
-	ss << "end" << '\0' ;  
+	ss << '\0';
 
 	tablestr = ss.str();
 	outputStream << tablestr;
@@ -163,10 +162,7 @@ optional<InvalidCompressReason> CompressWriter::compress() {
 //-------------------------//
 // Compresser reader class
 //-------------------------//
-CompressReader::CompressReader(){}
-CompressReader::CompressReader(string _fullPathToFile) {
-	fullPathToFile = (_fullPathToFile);
-}
+CompressReader::CompressReader(string _fullPathToFile) : CompressBaseAbstract(_fullPathToFile) {}
 
 CompressReader::CompressReader(CompressReader& other){
 	this->fullPathToFile = other.fullPathToFile;
@@ -185,7 +181,7 @@ map<char, vector<bool>> CompressReader::readEncodingTableFromFile() {
 	string value = " ";
 	vector<bool> tmpvec;
 	map<char, vector<bool>> tableCharVectorBool;
-	while (getline(inputstream, key) && key != "end" && getline(inputstream, value)) {
+	while (getline(inputstream, key) && key[0] != '\0' && getline(inputstream, value)) {
 		for (const auto i : value) {
 			tmpvec.push_back(i == '0' ? false : true);
 		}
@@ -217,8 +213,12 @@ string CompressReader::readFromFile() {
 	// first 4 bytes after Huffman table is the size of the binaryString
 	// convert it from char to bitset and to int.
 	string sizeOfData;
-	sizeOfData.resize(bytesOffset);
-	inputstream.read(&sizeOfData[0], bytesOffset);
+	int counter = 0;
+	while (counter < 4) {
+		inputstream.get(chartmp);
+		sizeOfData.push_back(chartmp);
+		++counter;
+	}
 	string sizeOfData8bitset;
 	for (const auto i : sizeOfData) {
 		sizeOfData8bitset += bitset<8>(i).to_string();

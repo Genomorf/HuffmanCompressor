@@ -13,7 +13,7 @@ using namespace std; // ---> bad code style but for pet-project is possible
 
 class CompressBaseAbstract {
 public:
-	
+	virtual ~CompressBaseAbstract(){}
 protected:
 	string fullPathToFile;
 	CompressBaseAbstract();
@@ -41,8 +41,6 @@ enum class InvalidCompressReason {
 
 class CompressWriter : public CompressBaseAbstract {
 public:
-	
-	CompressWriter();
 	CompressWriter(string _fullPathToFile);
 	CompressWriter(CompressWriter& other);
 	CompressWriter& operator=(const CompressWriter& rhs);
@@ -68,7 +66,6 @@ enum class InvalidDecompressReason {
 
 class CompressReader : public CompressBaseAbstract {
 public:
-	CompressReader();
 	CompressReader(string _fullPathToFile);
 	CompressReader(CompressReader& other);
 	CompressReader& operator=(const CompressReader& rhs);

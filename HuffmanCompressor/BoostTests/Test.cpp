@@ -6,18 +6,15 @@
 
 struct CompressWriterTestClass : public CompressWriter {
 public:
-	CompressWriterTestClass(string _fullPathToFile) {
-		fullPathToFile = _fullPathToFile;
-	}
+	CompressWriterTestClass(string _fullPathToFile) : CompressWriter(_fullPathToFile) {}
 	~CompressWriterTestClass() {}
 	friend struct CompressWriterInternalFunctionsTest;
 	
 };
 struct CompressReaderTestClass : public CompressReader {
 public:
-	CompressReaderTestClass(string _fullPathToFile) {
-		fullPathToFile = _fullPathToFile;
-	}
+	CompressReaderTestClass(string _fullPathToFile) : CompressReader(_fullPathToFile) {}
+
 	~CompressReaderTestClass() {}
 	friend struct CompressReaderInternalFunctionsTest;
 
@@ -124,30 +121,37 @@ BOOST_AUTO_TEST_CASE(CompressReaderInternalFunctionsTest) {
 
 BOOST_AUTO_TEST_CASE(CompressWriterCompressMethodTest) {
 	CompressWriter compWriter("./BoostTests/Text");
-	BOOST_CHECK(compWriter.compress() == "Invalid file");
+	auto opt = compWriter.compress();
+	BOOST_CHECK(*opt == InvalidCompressReason::INVALID_FILE);
 
 	compWriter = CompressWriter("./BoostTests/test_validators/EmptyText.txt");
-	BOOST_CHECK(compWriter.compress() == "File is empty");
+	opt = compWriter.compress();
+	BOOST_CHECK(*opt == InvalidCompressReason::FILE_IS_EMPTY);
 
 	compWriter = CompressWriter("./BoostTests/Text.txt");
-	BOOST_CHECK(compWriter.compress() == "");
+	opt = compWriter.compress();
+	BOOST_CHECK(!opt);
 
 	ifstream inp("./BoostTests/Text.comp");
 	inp.seekg(0, inp.end);
-	BOOST_CHECK(inp.tellg() == 151);
+	BOOST_CHECK(inp.tellg() == 146);
 }
 BOOST_AUTO_TEST_CASE(CompressReaderDecompressMethodTest) {
 	CompressReader compReader("./BoostTests/Text");
-	BOOST_CHECK(compReader.decompress() == "Invalid file");
+	auto opt = compReader.decompress();
+	BOOST_CHECK(*opt == InvalidDecompressReason::INVALID_FILE);
 
 	compReader = CompressReader("./BoostTests/Text.txt");
-	BOOST_CHECK(compReader.decompress() == "File is not *.comp");
+	opt = compReader.decompress();
+	BOOST_CHECK(*opt == InvalidDecompressReason::FILE_IS_NOT_COMP_FORMAT);
 
 	compReader = CompressReader("./BoostTests/test_validators/EmptyComp.comp");
-	BOOST_CHECK(compReader.decompress() == "Decompress failed");
+	opt = compReader.decompress();
+	BOOST_CHECK(*opt == InvalidDecompressReason::DECODING_FAILED);
 
 	compReader = CompressReader("./BoostTests/test_validators/EmptyCompWithTable.comp");
-	BOOST_CHECK(compReader.decompress() == "File is empty");
+	opt = compReader.decompress();
+	BOOST_CHECK(*opt == InvalidDecompressReason::FILE_IS_EMPTY);
 }
 
 BOOST_AUTO_TEST_CASE(isValidFileNameTest) {
