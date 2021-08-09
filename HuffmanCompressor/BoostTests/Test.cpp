@@ -37,14 +37,13 @@ BOOST_AUTO_TEST_CASE(CompressWriterInternalFunctionsTest) {
 	BOOST_CHECK(FileNameWithNoFormat == "Text");
 
 	string fileData = compTest.readFromFile();
-	BOOST_CHECK(fileData == "string1string2string3");
+	BOOST_CHECK(fileData == "string1\\nstring2\\nstring3\\n");
 
 	compTest.addFileNameToFileData(fullPathToDirSplitted.fileNameWithFormat, fileData);
-	BOOST_CHECK(fileData == "string1string2string3 Text.txt");
-
+	BOOST_CHECK(fileData == "string1\\nstring2\\nstring3\\n Text.txt");
 	string encodedStr = compTest.encodeData(fileData);
-	BOOST_CHECK(encodedStr == "0111110100000011101101100111110100000011101101110111110"
-							  "10000001110111000101001100110001001111101011111001111");
+	BOOST_CHECK(encodedStr == "001110000111110111100111010011010011100001111101111001111100110100111"
+							  "000011111011110100001001101011001000101000101110011011100101110");
 
 	string encodedStrCopy = encodedStr;
 	string encodedStrSize = bitset<32>(encodedStr.size()).to_string();
@@ -94,18 +93,18 @@ BOOST_AUTO_TEST_CASE(CompressReaderInternalFunctionsTest) {
 	BOOST_CHECK(FileNameWithNoFormat == "Text");
 
 	HoffmanCypher hc;
-	string s("string1string2string3 Text.txt");
+	string s("string1\\nstring2\\nstring3\\n Text.txt");
 	hc.encodeString(s);
 	auto hcTable = hc.getEncodingTable();
 	auto table = compTest.readEncodingTableFromFile();
 	BOOST_CHECK(hcTable == table);
 
 	string fileData = compTest.readFromFile();
-	BOOST_CHECK(fileData == "0111110100000011101101100111110100000011101101110111110"
-							"10000001110111000101001100110001001111101011111001111");
+	BOOST_CHECK(fileData == "0011100001111101111001110100110100111000011111011110011111001101001110"
+							"00011111011110100001001101011001000101000101110011011100101110");
 
 	string decodedStr = compTest.decodeData(fileData, compTest.reverseMap(move(table)));
-	BOOST_CHECK(decodedStr == "string1string2string3 Text.txt");
+	BOOST_CHECK(decodedStr == "string1\\nstring2\\nstring3\\n Text.txt");
 
 	compTest.writeToFile(fullPathToDirSplitted.fullPathToDir, FileNameWithNoFormat, decodedStr);
 	ifstream in2("./Text/Text.txt");
@@ -134,7 +133,7 @@ BOOST_AUTO_TEST_CASE(CompressWriterCompressMethodTest) {
 
 	ifstream inp("./BoostTests/Text.comp");
 	inp.seekg(0, inp.end);
-	BOOST_CHECK(inp.tellg() == 146);
+	BOOST_CHECK(inp.tellg() == 129);
 }
 BOOST_AUTO_TEST_CASE(CompressReaderDecompressMethodTest) {
 	CompressReader compReader("./BoostTests/Text");
