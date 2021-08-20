@@ -6,7 +6,14 @@
 CompressBaseAbstract::CompressBaseAbstract() {}
 
 
-CompressBaseAbstract::CompressBaseAbstract(string _fullPathToFile) : fullPathToFile(_fullPathToFile) {}
+CompressBaseAbstract::CompressBaseAbstract(string _fullPathToFile) 
+	: fullPathToFile(_fullPathToFile) 
+{
+	if (fullPathToFile.empty()) {
+		cerr << "Empty path to file";
+		throw;
+	}
+}
 
 // struct FullPathToDirSplitted {
 //	 string fileNameWithFormat;
@@ -37,7 +44,6 @@ string CompressBaseAbstract::getFileNameWithNoFormat(const string& fileNameWithF
 //-------------------------//
 // Compresser writer class
 //-------------------------//
-//CompressWriter::CompressWriter() {}
 CompressWriter::CompressWriter(string _fullPathToFile) :  CompressBaseAbstract(_fullPathToFile) {}
 
 CompressWriter::CompressWriter(CompressWriter& other)

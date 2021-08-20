@@ -49,11 +49,11 @@ public:
 protected:
 	map<char, vector<bool>> encodingTable;
 
-	string readFromFile() const;
+	string readFromFile() const override;
 	void addFileNameToFileData(string& fileNameWithFormat, string& fileData) const;
 	string encodeData(string& fileData);
 	void addMetaData(string& binaryString) const;
-	void writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& binaryString) const;
+	void writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& binaryString) const override;
 };
 
 
@@ -76,9 +76,9 @@ protected:
 	const size_t bytesOffset = 4;
 	map<char, vector<bool>> readEncodingTableFromFile() const;
 	map<vector<bool>, char> reverseMap(map<char, vector<bool>>&& tableCharVectorBool) const;
-	string readFromFile() const;
+	string readFromFile() const override;
 	string decodeData(string& fileData, map<vector<bool>, char>&& tableVectorBoolChar) const;
-	void writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& decodedStr) const;
+	void writeToFile(const string& fullPathToDir, const string& fileNameNoFormat, string& decodedStr) const override;
 };
 
 bool isValidFileName(string const& s);
