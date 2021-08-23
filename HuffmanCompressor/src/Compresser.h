@@ -34,6 +34,7 @@ protected:
 
 
 enum class InvalidCompressReason {
+	PATH_TO_FILE_IS_EMPTY,
 	INVALID_FILE,
 	FILE_IS_EMPTY,
 	FAILED_TO_ENCODE_DATA
@@ -58,6 +59,7 @@ protected:
 
 
 enum class InvalidDecompressReason {
+	PATH_TO_FILE_IS_EMPTY,
 	INVALID_FILE,
 	FILE_IS_NOT_COMP_FORMAT,
 	DECODING_FAILED,

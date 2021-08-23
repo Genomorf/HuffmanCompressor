@@ -7,13 +7,7 @@ CompressBaseAbstract::CompressBaseAbstract() {}
 
 
 CompressBaseAbstract::CompressBaseAbstract(string _fullPathToFile) 
-	: fullPathToFile(_fullPathToFile) 
-{
-	if (fullPathToFile.empty()) {
-		cerr << "Empty path to file";
-		throw;
-	}
-}
+	: fullPathToFile(_fullPathToFile) {}
 
 // struct FullPathToDirSplitted {
 //	 string fileNameWithFormat;
@@ -146,6 +140,9 @@ bool isValidFileName(string const& s) {
 
 
 optional<InvalidCompressReason> CompressWriter::compress() {
+	if (fullPathToFile.empty()) {
+		return InvalidCompressReason::PATH_TO_FILE_IS_EMPTY;
+	}
 	FullPathToDirSplitted fullPathToDirSplitted = splitFullPathToFile();
 	if (!isValidFileName(fullPathToDirSplitted.fileNameWithFormat)) {
 		return InvalidCompressReason::INVALID_FILE;
@@ -300,6 +297,9 @@ bool isCompFormatFile(const string& fileName) {
 
 
 optional<InvalidDecompressReason> CompressReader::decompress() const{
+	if (fullPathToFile.empty()) {
+		return InvalidDecompressReason::PATH_TO_FILE_IS_EMPTY;
+	}
 	FullPathToDirSplitted fullPathToDirSplitted = splitFullPathToFile();
 	if (!isValidFileName(fullPathToDirSplitted.fileNameWithFormat)) {
 		return InvalidDecompressReason::INVALID_FILE;

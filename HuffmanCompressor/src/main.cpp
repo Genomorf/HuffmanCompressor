@@ -15,6 +15,7 @@ int main(int argc, char* argv[])
 		optional<InvalidCompressReason> compressResult = compressWriter.compress();
 		if (!compressResult) {
 			cout << "done. ";
+			return 0;
 		}
 		else {
 			switch (*compressResult) {
@@ -27,8 +28,10 @@ int main(int argc, char* argv[])
 			case InvalidCompressReason::INVALID_FILE:
 				cout << "Invalid file" << '\n';
 				break;
+			case InvalidCompressReason::PATH_TO_FILE_IS_EMPTY:
+				cout << "Path to file is empty" << '\n';
 			}
-			
+			cout << "Failed to compress!\n";
 		}
 	}
 	else if (string(argv[1]) == "-decompress") {
@@ -37,6 +40,7 @@ int main(int argc, char* argv[])
 		optional<InvalidDecompressReason> decompressResult = compressReader.decompress();
 		if (!decompressResult) {
 			cout << "done. ";
+			return 0;
 		}
 		else {
 			switch (*decompressResult)
@@ -53,7 +57,10 @@ int main(int argc, char* argv[])
 			case InvalidDecompressReason::INVALID_FILE:
 				cout << "Invalid file" << '\n';
 				break;
+			case InvalidDecompressReason::PATH_TO_FILE_IS_EMPTY:
+				cout << "Path to file is empty" << '\n';
 			}
+			cout << "Failed to decompress!\n";
 		}
 	}
 }
